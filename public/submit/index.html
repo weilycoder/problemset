@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Problem</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+    <main class="page">
+        <section class="hero">
+            <h1 class="title">Submit Problem</h1>
+            <p class="subtitle">Share a new challenge with the problem set.</p>
+        </section>
+
+        <section class="panel">
+            <form class="form-grid" id="submit-form">
+                <div class="field">
+                    <label for="problem-title">Title</label>
+                    <input id="problem-title" name="title" type="text" placeholder="e.g. 1 + 1 Problem" required />
+                </div>
+
+                <div class="field">
+                    <label for="admin-key">Admin Key</label>
+                    <input id="admin-key" name="adminKey" type="password" placeholder="Enter admin passphrase"
+                        required />
+                </div>
+
+                <div class="field span-2">
+                    <label for="problem-content">Content</label>
+                    <textarea id="problem-content" name="content" rows="10" placeholder="Full problem description."
+                        required></textarea>
+                </div>
+
+                <div class="actions span-2">
+                    <button type="submit" class="primary">Submit Problem</button>
+                    <a class="text-link" href="/">Back to list</a>
+                </div>
+            </form>
+
+            <div class="status" id="submit-status">Fill out the form to submit a new problem.</div>
+        </section>
+    </main>
+    <script>
+        const form = document.getElementById("submit-form");
+        const statusEl = document.getElementById("submit-status");
+
+        function isTitleValid(title) {
+            return !/[^a-zA-Z0-9\s-]/.test(title);
+        }
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            statusEl.textContent = "Submitting...";
+
+            const title = document.getElementById("problem-title").value.trim();
+            const content = document.getElementById("problem-content").value.trim();
+            const adminKey = document.getElementById("admin-key").value.trim();
+
+            if (!title || !content || !adminKey) {
+                statusEl.textContent = "Please fill in all fields.";
+                return;
+            }
+
+            if (!isTitleValid(title)) {
+                statusEl.textContent = "Title contains invalid characters. Use letters, numbers, spaces, or dashes.";
+                return;
+            }
+
+            const payload = {
+                verification: adminKey,
+                problem: content,
+            };
+
+            try {
+                const response = await fetch(`/api/problem/${encodeURIComponent(title)}`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                if (response.ok) {
+                    statusEl.textContent = "Submitted successfully.";
+                    form.reset();
+                } else {
+                    const message = await response.text();
+                    statusEl.textContent = message || "Submit failed.";
+                }
+            } catch (error) {
+                statusEl.textContent = "Network error. Please try again.";
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+
+</html>
