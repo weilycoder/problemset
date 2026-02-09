@@ -47,25 +47,61 @@
     <script>
         const form = document.getElementById("submit-form");
         const statusEl = document.getElementById("submit-status");
+        const titleInput = document.getElementById("problem-title");
+        const contentInput = document.getElementById("problem-content");
 
         function isTitleValid(title) {
             return !/[^a-zA-Z0-9\s-]/.test(title);
+        }
+
+        async function preloadProblem() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get("id");
+            if (!id) {
+                return;
+            }
+
+            statusEl.textContent = "Loading problem...";
+            try {
+                const response = await fetch(`/api/problem/${encodeURIComponent(id)}`);
+                if (!response.ok) {
+                    window.location.href = "/submit";
+                    return;
+                }
+
+                let data = "";
+                try {
+                    data = await response.json();
+                } catch (error) {
+                    data = await response.text();
+                }
+
+                titleInput.value = id;
+                titleInput.disabled = true;
+                contentInput.value = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+                form.dataset.problemId = id;
+                statusEl.textContent = "Loaded. Update content and submit to save.";
+            } catch (error) {
+                statusEl.textContent = "Network error. Please try again.";
+                console.error(error);
+            }
         }
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
             statusEl.textContent = "Submitting...";
 
-            const title = document.getElementById("problem-title").value.trim();
-            const content = document.getElementById("problem-content").value.trim();
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
             const adminKey = document.getElementById("admin-key").value.trim();
+            const existingId = form.dataset.problemId;
 
             if (!title || !content || !adminKey) {
                 statusEl.textContent = "Please fill in all fields.";
                 return;
             }
 
-            if (!isTitleValid(title)) {
+            if (!existingId && !isTitleValid(title)) {
                 statusEl.textContent = "Title contains invalid characters. Use letters, numbers, spaces, or dashes.";
                 return;
             }
@@ -75,8 +111,10 @@
                 problem: content,
             };
 
+            const targetId = existingId || title;
+
             try {
-                const response = await fetch(`/api/problem/${encodeURIComponent(title)}`,
+                const response = await fetch(`/api/problem/${encodeURIComponent(targetId)}`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -86,7 +124,9 @@
 
                 if (response.ok) {
                     statusEl.textContent = "Submitted successfully.";
-                    form.reset();
+                    if (!existingId) {
+                        form.reset();
+                    }
                 } else {
                     const message = await response.text();
                     statusEl.textContent = message || "Submit failed.";
@@ -96,6 +136,8 @@
                 console.error(error);
             }
         });
+
+        preloadProblem();
     </script>
 </body>
 
