@@ -135,7 +135,7 @@ async function handleProblemPage(request, env, id) {
     return new Response("Problem not found", { status: 404 });
   }
 
-  const html = `<meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg" />${problem}<style class="fallback">body {visibility: hidden;white-space: pre;font-family: "JetBrains Mono", "monospace";}</style><script src="/markdeep.min.js" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep || (document.body.style.visibility = "visible")</script>`;
+  const html = `<meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg" /><style>body{background:radial-gradient(1200px 800px at 10% -10%, #ffe7c7 0%, transparent 60%),radial-gradient(900px 600px at 90% 10%, #d9efe6 0%, transparent 55%),#f4f0e8;}</style>${problem}<style class="fallback">body {visibility: hidden;white-space: pre;font-family: "JetBrains Mono", "monospace";}</style><script src="/markdeep.min.js" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep || (document.body.style.visibility = "visible")</script>`;
   return new Response(html, {
     headers: { "Content-Type": "text/html" },
   });
