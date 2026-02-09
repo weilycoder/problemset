@@ -50,11 +50,14 @@ async function submitProblem(request, env, id) {
     return new Response("Method Not Allowed", { status: 405 });
   }
 
+  let body;
   try {
-    const body = await request.json();
+    body = await request.json();
   } catch (e) {
     return new Response("Invalid JSON", { status: 400 });
   }
+
+  console.log("Received problem submission:", body);
 
   const problemData = body?.problem;
   if (!problemData) {
@@ -71,7 +74,7 @@ async function submitProblem(request, env, id) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  await env.PROBLEMSET.put(id, JSON.stringify(problemData));
+  await env.PROBLEMSET.put(id, problemData);
   return new Response("Problem submitted", { status: 201 });
 }
 
@@ -80,8 +83,9 @@ async function deleteProblem(request, env, id) {
     return new Response("Method Not Allowed", { status: 405 });
   }
 
+  let body;
   try {
-    const body = await request.json();
+    body = await request.json();
   } catch (e) {
     return new Response("Invalid JSON", { status: 400 });
   }
