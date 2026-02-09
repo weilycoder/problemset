@@ -148,10 +148,10 @@ export default {
     if (path === "/api/problems") {
       return await handleListProblems(request, env);
     } else if (path.startsWith("/api/problem/")) {
-      const id = path.slice("/api/problem/".length);
+      const id = decodeURIComponent(path.slice("/api/problem/".length));
       return await handleProblem(request, env, id);
     } else if (path.startsWith("/problem/")) {
-      const id = path.slice("/problem/".length);
+      const id = decodeURIComponent(path.slice("/problem/".length));
       return await handleProblemPage(request, env, id);
     }
     return new Response("Not Found", { status: 404 });

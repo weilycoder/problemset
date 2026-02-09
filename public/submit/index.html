@@ -52,10 +52,6 @@
         const contentInput = document.getElementById("problem-content");
         const actionsRow = document.querySelector(".actions");
 
-        function isTitleValid(title) {
-            return !/[^a-zA-Z0-9\s-]/.test(title);
-        }
-
         async function preloadProblem() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id");
@@ -141,11 +137,6 @@
 
             if (!title || !content || !adminKey) {
                 statusEl.textContent = "Please fill in all fields.";
-                return;
-            }
-
-            if (!existingId && !isTitleValid(title)) {
-                statusEl.textContent = "Title contains invalid characters. Use letters, numbers, spaces, or dashes.";
                 return;
             }
 
