@@ -162,6 +162,10 @@ body {
     min-height: 120px;
 }
 
+.masked {
+    -webkit-text-security: disc;
+}
+
 .hint {
     font-size: 0.85rem;
     color: var(--muted);
