@@ -38,7 +38,7 @@ async function getProblem(request, env, id) {
   const problem = await env.PROBLEMSET.get(id);
   if (problem) {
     return new Response(problem, {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain" },
     });
   } else {
     return new Response("Problem not found", { status: 404 });
