@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Problem Set</title>
+</head>
+
+<body>
+    <h1>Problem Set</h1>
+    <div id="problem-list"></div>
+
+    <script>
+        async function fetchProblems() {
+            const response = await fetch("/api/problems");
+            if (response.ok) {
+                const problems = await response.json();
+                const problemListDiv = document.getElementById("problem-list");
+                problems.forEach(problem => {
+                    const problemDiv = document.createElement("div");
+                    const problemLink = document.createElement("a");
+                    problemLink.href = `/problem/${problem}`;
+                    problemLink.textContent = problem;
+                    problemDiv.appendChild(problemLink);
+                    problemListDiv.appendChild(problemDiv);
+                });
+            } else {
+                console.error("Failed to fetch problems:", response.statusText);
+            }
+        }
+
+        fetchProblems();
+    </script>
+</body>
+
+</html>
