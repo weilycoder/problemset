@@ -1,0 +1,133 @@
+:root {
+    --bg: #f4f0e8;
+    --panel: #fffaf1;
+    --ink: #1e1b16;
+    --muted: #6f6457;
+    --accent: #c15a1a;
+    --accent-2: #2f6b5f;
+    --shadow: rgba(20, 15, 10, 0.18);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+    color: var(--ink);
+    background:
+        radial-gradient(1200px 800px at 10% -10%, #ffe7c7 0%, transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, #d9efe6 0%, transparent 55%),
+        var(--bg);
+    min-height: 100vh;
+}
+
+.page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 56px 24px 64px;
+}
+
+.hero {
+    display: grid;
+    gap: 16px;
+    align-items: end;
+    margin-bottom: 28px;
+}
+
+.title {
+    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+.meta span {
+    padding: 6px 12px;
+    border: 1px solid rgba(30, 27, 22, 0.15);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.panel {
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 20px 40px var(--shadow);
+    border: 1px solid rgba(30, 27, 22, 0.08);
+}
+
+#problem-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.problem-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(47, 107, 95, 0.15);
+    background: white;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.problem-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(193, 90, 26, 0.45);
+    box-shadow: 0 16px 30px rgba(193, 90, 26, 0.15);
+}
+
+.problem-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.problem-id {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.85rem;
+    color: var(--accent-2);
+    opacity: 0.8;
+}
+
+.problem-arrow {
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.status {
+    margin-top: 12px;
+    color: var(--muted);
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    .panel {
+        padding: 18px;
+    }
+
+    .meta {
+        font-size: 0.9rem;
+    }
+}
