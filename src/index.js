@@ -105,12 +105,12 @@ async function deleteProblem(request, env, id) {
     return new Response("Problem not found", { status: 404 });
   }
 
-  const success = await env.PROBLEMSET.delete(id);
-  if (!success) {
+  try {
+    await env.PROBLEMSET.delete(id);
+    return new Response("Problem deleted", { status: 200 });
+  } catch (e) {
     return new Response("Failed to delete problem", { status: 500 });
   }
-
-  return new Response("Problem deleted", { status: 200 });
 }
 
 async function handleProblem(request, env, id) {
