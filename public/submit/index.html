@@ -49,6 +49,7 @@
         const statusEl = document.getElementById("submit-status");
         const titleInput = document.getElementById("problem-title");
         const contentInput = document.getElementById("problem-content");
+        const actionsRow = document.querySelector(".actions");
 
         function isTitleValid(title) {
             return !/[^a-zA-Z0-9\s-]/.test(title);
@@ -61,6 +62,8 @@
                 return;
             }
 
+            addDeleteButton(id);
+
             statusEl.textContent = "Loading problem...";
             try {
                 const response = await fetch(`/api/problem/${encodeURIComponent(id)}`);
@@ -69,22 +72,61 @@
                     return;
                 }
 
-                let data = "";
-                try {
-                    data = await response.json();
-                } catch (error) {
-                    data = await response.text();
-                }
-
                 titleInput.value = id;
                 titleInput.disabled = true;
-                contentInput.value = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+                contentInput.value = await response.text();
                 form.dataset.problemId = id;
                 statusEl.textContent = "Loaded. Update content and submit to save.";
             } catch (error) {
                 statusEl.textContent = "Network error. Please try again.";
                 console.error(error);
             }
+        }
+
+        function addDeleteButton(id) {
+            if (!actionsRow || actionsRow.querySelector(".danger")) {
+                return;
+            }
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "danger";
+            deleteButton.textContent = "Delete Problem";
+            deleteButton.addEventListener("click", async () => {
+                const adminKey = document.getElementById("admin-key").value.trim();
+                if (!adminKey) {
+                    statusEl.textContent = "Please enter the admin key to delete.";
+                    return;
+                }
+
+                if (!window.confirm("Delete this problem? This cannot be undone.")) {
+                    return;
+                }
+
+                statusEl.textContent = "Deleting...";
+                try {
+                    const response = await fetch(`/api/problem/${encodeURIComponent(id)}`,
+                        {
+                            method: "DELETE",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ verification: adminKey })
+                        }
+                    );
+
+                    if (response.ok) {
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    const message = await response.text();
+                    statusEl.textContent = message || "Delete failed.";
+                } catch (error) {
+                    statusEl.textContent = "Network error. Please try again.";
+                    console.error(error);
+                }
+            });
+
+            actionsRow.appendChild(deleteButton);
         }
 
         form.addEventListener("submit", async (event) => {

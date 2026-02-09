@@ -195,6 +195,24 @@ body {
     box-shadow: 0 18px 30px rgba(193, 90, 26, 0.25);
 }
 
+.danger {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 24px;
+    background: linear-gradient(120deg, #8b2b2b 0%, #b24b3c 100%);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 12px 20px rgba(139, 43, 43, 0.22);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 26px rgba(139, 43, 43, 0.28);
+}
+
 .text-link {
     color: var(--accent-2);
     text-decoration: none;
@@ -220,6 +238,10 @@ body {
     }
 
     .primary {
+        width: 100%;
+    }
+
+    .danger {
         width: 100%;
     }
 
