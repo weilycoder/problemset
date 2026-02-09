@@ -36,9 +36,12 @@
                 }
                 statusText.textContent = "";
                 problems.forEach(problem => {
-                    const problemLink = document.createElement("a");
-                    problemLink.className = "problem-card";
-                    problemLink.href = `/problem/${problem}`;
+                    // Use a div card so we can add a separate edit button inside the card
+                    const problemCard = document.createElement("div");
+                    problemCard.className = "problem-card";
+                    problemCard.addEventListener("click", () => {
+                        window.location.href = `/problem/${encodeURIComponent(problem)}`;
+                    });
 
                     const name = document.createElement("div");
                     name.className = "problem-name";
@@ -56,9 +59,24 @@
                     arrow.className = "problem-arrow";
                     arrow.textContent = "→";
 
-                    problemLink.appendChild(left);
-                    problemLink.appendChild(arrow);
-                    problemListDiv.appendChild(problemLink);
+                    const editBtn = document.createElement("button");
+                    editBtn.className = "problem-edit";
+                    editBtn.type = "button";
+                    editBtn.textContent = "编辑";
+                    editBtn.title = "编辑题目";
+                    editBtn.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        window.location.href = `/submit?id=${encodeURIComponent(problem)}`;
+                    });
+
+                    const right = document.createElement("div");
+                    right.className = "problem-actions";
+                    right.appendChild(editBtn);
+                    right.appendChild(arrow);
+
+                    problemCard.appendChild(left);
+                    problemCard.appendChild(right);
+                    problemListDiv.appendChild(problemCard);
                 });
             } else {
                 statusText.textContent = "题目加载失败，请检查服务状态。";
